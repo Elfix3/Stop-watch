@@ -97,6 +97,7 @@ begin
                 tens_ms <= (others => '0');
                 seconds <= (others => '0');
                 minutes <= (others => '0');
+                hours <= (others => '0');
             
             elsif current_state = RUNNING then
                 if tick_counter < 999999 then
@@ -164,12 +165,12 @@ begin
     
     process(clk) begin
         if rising_edge(clk) then
-             if current_state = IDLE then
-                display <= SEC;
+            if hours > 0 then
+                display <= H;
             elsif minutes > 0 then
                 display <= MIN;
-            elsif hours > 0 then
-                display <= H;
+            elsif current_state <= IDLE then
+                display <= SEC;
             end if;
         end if;
     end process;
@@ -183,10 +184,10 @@ begin
                     & std_logic_vector(resize(minutes mod 10,4)) 
                     & std_logic_vector(resize(seconds / 10,4))
                     & std_logic_vector(resize(seconds mod 10,4)) when display = MIN
-    else            std_logic_vector(resize(hours / 10,4))
+    else            std_logic_vector(resize(hours / 10,4))      
                     & std_logic_vector(resize(hours mod 10,4)) 
                     & std_logic_vector(resize(minutes / 10,4))
-                    & std_logic_vector(resize(minutes mod 10,4));
+                    & std_logic_vector(resize(minutes mod 10,4)) when display = H;
     
         
     
